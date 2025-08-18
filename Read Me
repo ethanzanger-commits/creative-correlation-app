@@ -1,0 +1,9 @@
+# Creative Correlation App
+
+Upload your ad creatives + performance data.  
+The app shows how creative performance correlates with metrics like conversions.
+
+## Run locally
+```bash
+pip install -r requirements.txt
+streamlit run app.py
