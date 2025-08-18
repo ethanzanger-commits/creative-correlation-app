@@ -1,0 +1,46 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+from PIL import Image
+import os
+from scipy.stats import pearsonr
+
+st.set_page_config(page_title="Creative Correlation App", layout="wide")
+
+st.title("📊 Creative Correlation App")
+
+st.sidebar.header("Upload your data")
+
+perf_file = st.sidebar.file_uploader("Upload Performance CSV", type=["csv"])
+map_file = st.sidebar.file_uploader("Upload Mapping CSV", type=["csv"])
+creative_files = st.sidebar.file_uploader("Upload Creatives", type=["jpg", "jpeg", "png", "mp4"], accept_multiple_files=True)
+
+if perf_file and map_file:
+    perf = pd.read_csv(perf_file)
+    mapping = pd.read_csv(map_file)
+
+    st.subheader("Performance Data")
+    st.dataframe(perf)
+
+    merged = perf.merge(mapping, on="creative_id", how="left")
+
+    metrics = ["impressions", "clicks", "spend", "conversions", "revenue"]
+    correlations = {}
+    for m in metrics:
+        if m in merged.columns:
+            try:
+                corr, _ = pearsonr(merged[m], merged["conversions"])
+                correlations[m] = corr
+            except Exception:
+                correlations[m] = None
+
+    st.subheader("📈 Correlations with Conversions")
+    st.write(pd.DataFrame.from_dict(correlations, orient="index", columns=["Correlation"]))
+
+    if creative_files:
+        st.subheader("🖼 Creative Gallery")
+        for file in creative_files:
+            if file.type.startswith("image"):
+                st.image(Image.open(file), caption=file.name, use_container_width=True)
+            else:
+                st.video(file)
