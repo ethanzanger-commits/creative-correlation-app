@@ -1,0 +1,13 @@
+
+---
+
+# 🍭 Step 3. Send files to GitHub
+In your terminal (inside the `creative-correlation-app` folder):  
+
+```bash
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/YOURNAME/creative-correlation-app.git
+git push -u origin main
